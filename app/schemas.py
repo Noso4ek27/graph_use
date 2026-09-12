@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Literal
+from typing import Literal, Optional, TypedDict
 from uuid import uuid4
 import datetime
 
@@ -13,7 +13,7 @@ class OrderContract(BaseModel):
 
 
 class ClaimContract(BaseModel):
-    order_id : str = Field(default_factory=lambda: uuid4().hex)
+    claim_id : str = Field(default_factory=lambda: uuid4().hex)
     client : str = Field(...)
     reasons : str = Field(...)
     compensation : float = Field(...)
@@ -27,3 +27,9 @@ class RequestContract(BaseModel):
     amount: float = Field(ge = 10_000, le = 10_000_000)
     urgent: bool = Field(default=False)
     created_at: datetime.datetime = Field(default_factory=datetime.datetime.now(datetime.timezone.utc))
+
+class GraphState(TypedDict, total=False):
+    request: RequestContract
+    contract: OrderContract | ClaimContract | None
+    file_path: str | None
+    error: str | None
