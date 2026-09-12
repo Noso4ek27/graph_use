@@ -8,4 +8,4 @@ uv.lock
 .venv
 
 .vscode/
-.output/
+output/
