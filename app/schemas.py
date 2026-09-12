@@ -5,7 +5,6 @@ import datetime
 
 class OrderContract(BaseModel):
     order_id : str = Field(...)
-    client : str = Field(...)
     description : str = Field(...)
     amount : float = Field(ge = 10_000, le = 10_000_000)
     urgent : bool = Field(default=False)
@@ -14,7 +13,6 @@ class OrderContract(BaseModel):
 
 class ClaimContract(BaseModel):
     claim_id : str = Field(default_factory=lambda: uuid4().hex)
-    client : str = Field(...)
     reasons : str = Field(...)
     compensation : float = Field(...)
     urgent : bool = Field(default=False)
