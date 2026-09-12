@@ -1,0 +1,29 @@
+from pydantic import BaseModel, Field
+from typing import Literal
+from uuid import uuid4
+import datetime
+
+class OrderContract(BaseModel):
+    order_id : str = Field(...)
+    client : str = Field(...)
+    description : str = Field(...)
+    amount : float = Field(ge = 10_000, le = 10_000_000)
+    urgent : bool = Field(default=False)
+    approval_needed : bool = Field(default=False)
+
+
+class ClaimContract(BaseModel):
+    order_id : str = Field(default_factory=lambda: uuid4().hex)
+    client : str = Field(...)
+    reasons : str = Field(...)
+    compensation : float = Field(...)
+    urgent : bool = Field(default=False)
+    approval_needed : bool = Field(default=False)
+
+
+class RequestContract(BaseModel):
+    request_id: str = Field(default_factory=lambda: uuid4().hex)
+    task_type: Literal["order", "claim"]
+    amount: float = Field(ge = 10_000, le = 10_000_000)
+    urgent: bool = Field(default=False)
+    created_at: datetime.datetime = Field(default_factory=datetime.datetime.now(datetime.timezone.utc))
