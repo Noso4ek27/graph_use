@@ -56,7 +56,7 @@ async def build_claim(state: dict) -> dict:
     req: RequestContract = state["request"]
     contract = ClaimContract(
         claim_id=str(uuid.uuid4()),
-        reason=random.choice(["Брак товара", "Нарушение сроков", "Неполная комплектация"]),
+        reasons = random.choice(["Брак товара", "Нарушение сроков", "Неполная комплектация"]),
         compensation=req.amount,
         urgent=req.urgent,
         approval_needed=req.amount > 1_000_000,

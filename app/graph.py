@@ -1,7 +1,9 @@
 from langgraph.graph import StateGraph, END
+import asyncio
 
 from app.schemas import GraphState
 from app.nodes import validate_request, build_order, build_claim, save_contract, fallback
+from app.simulation import simulate_request
 from app.utils import setup_logging, get_logger
 
 setup_logging()
@@ -37,4 +39,27 @@ builder.add_conditional_edges(
 )
 
 builder.add_edge("fallback", END)
+
 graph = builder.compile()
+
+
+
+
+async def main():
+    req = await simulate_request()
+    logger.info(f"Заявка: {req.task_type}, {req.amount}₽, срочная={req.urgent}")
+
+    state: dict = {"request": req}
+    result = await graph.ainvoke(state)
+
+    logger.info(f"Результат: {result}")
+    logger.info(f"Ошибка: {result.get('error')}")
+    logger.info(f"Файл: {result.get('file_path')}")
+    contract = result.get("contract")
+    
+    if contract:
+        logger.info(f"Контракт: {contract.model_dump_json(indent=2)}")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

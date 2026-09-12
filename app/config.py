@@ -1,5 +1,5 @@
+from pathlib import Path
 
-
-OUTPUT_DIR_ORDERS = "C:\\Users\\medve\\Documents\\Учёба\\Своё\\graph_demo\\graph_use\\output\\orders"
-OUTPUT_DIR_CLAIMS = "C:\\Users\\medve\\Documents\\Учёба\\Своё\\graph_demo\\graph_use\\output\\claims"
-
+BASE_DIR = Path(__file__).resolve().parent.parent
+OUTPUT_DIR_ORDERS = BASE_DIR / "output" / "orders"
+OUTPUT_DIR_CLAIMS = BASE_DIR / "output" / "claims"
