@@ -15,8 +15,10 @@ graph TD;
 	fallback(fallback)
 	__end__([<p>__end__</p>]):::last
 	__start__ --> validate_request;
-	build_claim --> save_logs;
-	build_order --> save_logs;
+	build_claim -.-> fallback;
+	build_claim -.-> save_logs;
+	build_order -.-> fallback;
+	build_order -.-> save_logs;
 	fallback --> save_logs;
 	validate_request -.-> build_claim;
 	validate_request -.-> build_order;

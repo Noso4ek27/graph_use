@@ -10,6 +10,14 @@ setup_logging()
 logger = get_logger(__name__)
 
 def route_by_type(state: GraphState) -> str:
+    """
+    Note:
+        Определяет следующий узел графа на основе типа задачи в состоянии графа.
+    Args:
+        state (GraphState): Состояние графа, содержащее данные запроса контракта.
+    Returns:
+        str: Имя следующего узла графа для перехода.
+    """
     if state.get("error") is not None:
         return "fallback"
     elif state.get("request").task_type == "order":
@@ -17,6 +25,33 @@ def route_by_type(state: GraphState) -> str:
     else:
         return "build_claim"
 
+def route_claim(state: GraphState) -> str:
+    """
+    Note:
+        Определяет следующий узел графа на основе типа задачи в состоянии графа.
+    Args:
+        state (GraphState): Состояние графа, содержащее данные запроса контракта.
+    Returns:
+        str: Имя следующего узла графа для перехода.
+    """
+    if state.get("error") is not None:
+        return "fallback"
+    else:
+        return "save_logs"
+
+def route_order(state: GraphState) -> str:
+    """
+    Note:
+        Определяет следующий узел графа на основе типа задачи в состоянии графа.
+    Args:
+        state (GraphState): Состояние графа, содержащее данные запроса контракта.
+    Returns:
+        str: Имя следующего узла графа для перехода.
+    """
+    if state.get("error") is not None:
+        return "fallback"
+    else:
+        return "save_logs"
 
 builder = StateGraph(GraphState)
 
@@ -28,8 +63,6 @@ builder.add_node("fallback", fallback)
 
 builder.set_entry_point("validate_request")
 
-builder.add_edge("build_order", "save_logs")
-builder.add_edge("build_claim", "save_logs")
 builder.add_edge("fallback", "save_logs")
 builder.add_edge("save_logs", END)
 
@@ -37,6 +70,18 @@ builder.add_conditional_edges(
     "validate_request", 
     route_by_type,           
     {"build_order": "build_order", "build_claim": "build_claim", "fallback": "fallback"},
+)
+
+builder.add_conditional_edges(
+    "build_order", 
+    route_order,           
+    {"save_logs": "save_logs", "fallback": "fallback"},
+)
+
+builder.add_conditional_edges(
+    "build_claim", 
+    route_claim,           
+    {"save_logs": "save_logs", "fallback": "fallback"},
 )
 
 graph = builder.compile()

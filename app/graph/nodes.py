@@ -10,7 +10,6 @@ from app.utils import json_serializer
 setup_logging()
 logger = get_logger(__name__)
 
-#TODO
 async def validate_request(state: dict) -> dict:
     """
     Note: 
@@ -47,17 +46,20 @@ async def build_order(state: dict) -> dict:
     Returns:
         dict: Обновленное состояние графа с созданным объектом заказа.
     """
-    req: RequestContract = state["request"]
-    contract = OrderContract(
-        order_id=str(uuid.uuid4()),
-        description=random.choice(["Поставка оборудования", "Разработка ПО", "Монтажные работы"]),
-        amount=req.amount,
-        urgent=req.urgent,
-        approval_needed=req.amount > 1_000_000,
-    )
-    logger.info(f"Order created: {contract}")
-    return {"contract": contract}
-
+    try:
+        req: RequestContract = state["request"]
+        contract = OrderContract(
+            order_id=str(uuid.uuid4()),
+            description=random.choice(["Поставка оборудования", "Разработка ПО", "Монтажные работы"]),
+            amount=req.amount,
+            urgent=req.urgent,
+            approval_needed=req.amount > 1_000_000,
+        )
+        logger.info(f"Order created: {contract}")
+        return {"contract": contract}
+    except Exception as e:
+        logger.error(f"Error building order: {e}")
+        return {"error": str(e)}
 
 async def build_claim(state: dict) -> dict:
     """
@@ -68,16 +70,20 @@ async def build_claim(state: dict) -> dict:
     Returns:
         dict: Обновленное состояние графа с созданным объектом претензии.
     """
-    req: RequestContract = state["request"]
-    contract = ClaimContract(
-        claim_id=str(uuid.uuid4()),
-        reasons = random.choice(["Брак товара", "Нарушение сроков", "Неполная комплектация"]),
-        compensation=req.amount,
-        urgent=req.urgent,
-        approval_needed=req.amount > 1_000_000,
-    )
-    logger.info(f"Claim created: {contract}")
-    return {"contract": contract}
+    try:
+        req: RequestContract = state["request"]
+        contract = ClaimContract(
+            claim_id=str(uuid.uuid4()),
+            reasons = random.choice(["Брак товара", "Нарушение сроков", "Неполная комплектация"]),
+            compensation=req.amount,
+            urgent=req.urgent,
+            approval_needed=req.amount > 1_000_000,
+        )
+        logger.info(f"Claim created: {contract}")
+        return {"contract": contract}
+    except Exception as e:
+        logger.error(f"Error building claim: {e}")
+        return {"error": str(e)}
 
 
 async def save_logs(state: dict) -> dict:
