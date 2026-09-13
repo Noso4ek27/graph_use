@@ -1,11 +1,14 @@
 import logging
+from datetime import datetime
 
 def setup_logging(level = logging.INFO):
     """
-    Настраивает базовую конфигурацию логирования для всего приложения
+    Note:
+        Настраивает базовую конфигурацию логирования для всего приложения
 
     Args:
         level: уровень логированяи (по умолчанию logging.INFO)
+    
     """
     logging.basicConfig(
         level=level
@@ -17,7 +20,8 @@ def setup_logging(level = logging.INFO):
 
 def get_logger(name: str) -> logging.Logger:
     """
-    Создает и возвращает экземпляр логгера с указанным именем.
+    Notes:
+        Создает и возвращает экземпляр логгера с указанным именем.
 
     Args:
         name: Имя логгера
@@ -26,6 +30,23 @@ def get_logger(name: str) -> logging.Logger:
         logging.Logger: Настроенный объект логгера
     """
     return logging.getLogger(name)
+
+
+def json_serializer(obj):
+    """
+    Note:
+        Сериализует объект в JSON-совместимый формат.
+    Args:
+        obj: Объект для сериализации
+    Returns:
+        str: JSON-совместимое представление объекта
+    """
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+    if hasattr(obj, "model_dump"):
+        return obj.model_dump()
+    return str(obj)
+
 
 if __name__ == "__main__":
     setup_logging()

@@ -24,10 +24,9 @@ class RequestContract(BaseModel):
     task_type: Literal["order", "claim"]
     amount: float = Field(...)
     urgent: bool = Field(default=False)
-    created_at: datetime.datetime = Field(default_factory=datetime.datetime.now(datetime.timezone.utc))
+    created_at: datetime.datetime = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc))
 
 class GraphState(TypedDict, total=False):
     request: RequestContract
     contract: OrderContract | ClaimContract | None
-    file_path: str | None
     error: str | None

@@ -2,7 +2,7 @@ import uuid
 import random 
 import datetime
 
-from app.schemas import RequestContract
+from app.models.schemas import RequestContract
 from app.utils import setup_logging, get_logger
 
 setup_logging()
@@ -19,7 +19,7 @@ async def simulate_request() -> RequestContract:
     return RequestContract(
         request_id=uuid.uuid4().hex,
         task_type=random.choice(["order", "claim"]),
-        amount=random.uniform(10_000, 12_000_000),
+        amount=random.uniform(-1_000_000, 12_000_000),
         urgent=random.choice([True, False]),
         created_at=datetime.datetime.now(datetime.timezone.utc)
     )
